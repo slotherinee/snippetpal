@@ -1,0 +1,229 @@
+import { Input } from "@/components/ui/input";
+import {
+	DropdownMenu,
+	DropdownMenuTrigger,
+	DropdownMenuContent,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu";
+import {
+	Card,
+	CardHeader,
+	CardContent,
+	CardFooter,
+} from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import Link from "next/link";
+import {
+	Pagination,
+	PaginationContent,
+	PaginationItem,
+	PaginationPrevious,
+	PaginationLink,
+	PaginationNext,
+} from "@/components/ui/pagination";
+import { db } from "@/db";
+import { count, desc, like, or } from "drizzle-orm";
+import { blogPostsTable } from "@/db/schema";
+import PostPagination from "@/components/PostPagination";
+
+type Post = {
+	id: number;
+	title: string;
+	description: string;
+	author: string;
+	date: string;
+	readTime: string;
+};
+
+export default async function Posts({
+	searchParams,
+}: {
+	searchParams?: {
+		query?: string;
+		page?: string;
+	};
+}) {
+	const query = searchParams?.query || "";
+	const currentPage = Number(searchParams?.page) || 1;
+
+	const getTotalPostCount = async (isFiltering?: boolean) => {
+		if (isFiltering) {
+			const totalFilteredPostCount = await db
+				.select({ count: count() })
+				.from(blogPostsTable)
+				.where(like(blogPostsTable.title, `%${query}%`));
+			return totalFilteredPostCount[0].count;
+		}
+		const totalPostCount = await db
+			.select({ count: count() })
+			.from(blogPostsTable);
+		return totalPostCount[0].count;
+	};
+
+	async function getPosts(page = 1, pageSize = 4) {
+		return [
+			await db
+				.select()
+				.from(blogPostsTable)
+				.orderBy(desc(blogPostsTable.date))
+				.limit(pageSize)
+				.offset((page - 1) * pageSize),
+			await getTotalPostCount(),
+		];
+	}
+
+	const [posts, totalPages] = await getPosts(currentPage, 4);
+	const filterPosts = async (filter: string) => {
+		if (!filter) {
+			return [posts, totalPages];
+		}
+		const filteredPosts = await db
+			.select()
+			.from(blogPostsTable)
+			.where(
+				or(
+					like(blogPostsTable.title, `%${filter}%`),
+					like(blogPostsTable.description, `%${filter}%`)
+				)
+			);
+		return [filteredPosts, await getTotalPostCount(true)];
+	};
+
+	const [filteredPosts, filteredPagesCount] = await filterPosts(query);
+
+	return (
+		<div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col min-h-dvh">
+			<div className="flex flex-col sm:flex-row items-center justify-between mb-8">
+				<div className="flex items-center space-x-4 mb-4 sm:mb-0">
+					<div className="relative flex-1">
+						<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+							<SearchIcon className="h-5 w-5 text-muted-foreground" />
+						</div>
+						<Input
+							type="search"
+							placeholder="Search blog posts..."
+							className="pl-10 pr-4 py-2 rounded-md bg-background border border-input focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+						/>
+					</div>
+				</div>
+			</div>
+			<div className="grid grid-cols-1 gap-8">
+				{filteredPosts.length > 0 ? (
+					filteredPosts.map((post) => (
+						<Card key={post.id}>
+							<CardHeader>
+								<div className="flex items-center space-x-4">
+									<Avatar className="w-10 h-10">
+										<AvatarFallback>
+											{post.author
+												.split(" ")
+												.map((name) => name[0])
+												.join("")}
+										</AvatarFallback>
+									</Avatar>
+									<div>
+										<h3 className="text-lg font-bold hover:underline">
+											<Link href={`/posts/${post.id}`}>{post.title}</Link>
+										</h3>
+										<p className="text-muted-foreground text-sm">
+											{post.author} •{" "}
+											{new Date(post.date).toLocaleDateString("en-US", {
+												year: "numeric",
+												month: "long",
+												day: "numeric",
+											})}{" "}
+											• {post.readTime}
+										</p>
+									</div>
+								</div>
+							</CardHeader>
+							<CardContent>
+								<p>{post.description}</p>
+							</CardContent>
+							<CardFooter>
+								<Link
+									href={`/posts/${post.id}`}
+									className="text-primary font-medium hover:underline"
+									prefetch={false}
+								>
+									Read more
+								</Link>
+							</CardFooter>
+						</Card>
+					))
+				) : (
+					<h2 className="text-center">No posts found</h2>
+				)}
+			</div>
+			{posts.length > 0 && (
+				<div className="flex justify-center mt-8">
+					<PostPagination
+						totalPosts={filteredPagesCount}
+						currentPage={currentPage}
+					/>
+				</div>
+			)}
+		</div>
+	);
+}
+
+function FilterIcon(props: any) {
+	return (
+		<svg
+			{...props}
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+		</svg>
+	);
+}
+
+function SearchIcon(props: any) {
+	return (
+		<svg
+			{...props}
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<circle cx="11" cy="11" r="8" />
+			<path d="m21 21-4.3-4.3" />
+		</svg>
+	);
+}
+
+function XIcon(props: any) {
+	return (
+		<svg
+			{...props}
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<path d="M18 6 6 18" />
+			<path d="m6 6 12 12" />
+		</svg>
+	);
+}
