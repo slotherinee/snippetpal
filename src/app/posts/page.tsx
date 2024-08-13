@@ -27,6 +27,7 @@ import { db } from "@/db";
 import { count, desc, like, or } from "drizzle-orm";
 import { blogPostsTable } from "@/db/schema";
 import PostPagination from "@/components/PostPagination";
+import { Metadata } from "next";
 
 type Post = {
   id: number;
@@ -35,6 +36,12 @@ type Post = {
   author: string;
   date: string;
   readTime: string;
+};
+
+export const metadata: Metadata = {
+  title: "Posts",
+  description:
+    "Discover a curated collection of code snippets, meticulously crafted to help you build amazing web applications. Find the perfect solution, learn new techniques, and level up your frontend skills. Tired of searching for the right code? SnippetPal simplifies your frontend development journey. Explore our collection, gain valuable insights, and build exceptional web experiences.",
 };
 
 export default async function Posts({

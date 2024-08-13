@@ -1,5 +1,12 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "About us",
+  description:
+    "Discover a curated collection of code snippets, meticulously crafted to help you build amazing web applications. Find the perfect solution, learn new techniques, and level up your frontend skills. Tired of searching for the right code? SnippetPal simplifies your frontend development journey. Explore our collection, gain valuable insights, and build exceptional web experiences. Learn more about our blog and the team behind it.",
+};
 
 export default function About() {
   return (
