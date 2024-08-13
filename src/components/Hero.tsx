@@ -3,9 +3,10 @@ import Link from "next/link";
 
 const Hero = () => {
 	return (
-		<section className="flex flex-col gap-8">
+		<section className="flex flex-col gap-y-16">
 			<Image
-				className="w-full object-cover rounded"
+			priority
+				className="w-full object-cover rounded max-h-[768px]"
 				src="/hero-image.jpg"
 				alt="hero image"
 				width={0}

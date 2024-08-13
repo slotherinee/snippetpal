@@ -11,7 +11,6 @@ const MarkdownRenderer = ({ markdown }: { markdown: string | null }) => {
 		<ReactMarkdown
 			remarkPlugins={[remarkGfm]}
 			components={{
-				// Define how to render code blocks
 				code({ node, inline, className, children, ...props }) {
 					const language = className ? className.replace(/language-/, "") : "";
 					if (inline) {
@@ -37,12 +36,13 @@ const MarkdownRenderer = ({ markdown }: { markdown: string | null }) => {
 				img({ node, src, alt, ...props }) {
 					return (
 						<Image
+						priority
 							src={src}
 							alt={alt}
 							width={0}
 							height={0}
 							sizes="100vw"
-							style={{ width: "100%", height: "auto" }} // optional
+							style={{ width: "100%", height: "auto" }}
 							{...props}
 							className="rounded"
 						/>
