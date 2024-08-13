@@ -6,7 +6,13 @@ import { blogPostsTable } from "./schema";
 
 export async function addDataToDb() {
   try {
-    const initialMarkdown = await postsGenerator();
+    const previousPosts = await db
+      .select({
+        title: blogPostsTable.title,
+        author: blogPostsTable.author,
+      })
+      .from(blogPostsTable);
+    const initialMarkdown = await postsGenerator(previousPosts);
 
     const imageUrl = getImage();
 
