@@ -126,7 +126,7 @@ export default async function Posts({
       <div className="grid grid-cols-1 gap-8">
         {Array.isArray(filteredPosts) && filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
-            <Card key={post.id}>
+            <Card className="group" key={post.id}>
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="w-10 h-10">
@@ -138,7 +138,7 @@ export default async function Posts({
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="text-lg font-bold hover:underline">
+                    <h3 className="text-lg font-bold hover:underline hover:underline-offset-2">
                       <Link href={`/posts/${post.id}`}>{post.title}</Link>
                     </h3>
                     <p className="text-muted-foreground text-sm">
@@ -159,7 +159,7 @@ export default async function Posts({
               <CardFooter>
                 <Link
                   href={`/posts/${post.id}`}
-                  className="text-primary font-medium hover:underline"
+                  className="text-primary font-medium hover:underline hover:underline-offset-2"
                   prefetch={false}
                 >
                   Read more
@@ -175,7 +175,9 @@ export default async function Posts({
         <div className="flex justify-center mt-8">
           <PostPagination
             totalPosts={
-              filteredPagesCount ? (filteredPagesCount as number) : totalPages
+              filteredPagesCount
+                ? (filteredPagesCount as number)
+                : (totalPages as number)
             }
             currentPage={currentPage}
           />
