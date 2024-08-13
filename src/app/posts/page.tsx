@@ -108,7 +108,7 @@ export default async function Posts({
   );
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col min-h-dvh">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col min-h-dvh">
       <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
         <div className="flex items-center space-x-4 mb-4 sm:mb-0">
           <div className="relative flex-1">
@@ -126,45 +126,54 @@ export default async function Posts({
       <div className="grid grid-cols-1 gap-8">
         {Array.isArray(filteredPosts) && filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
-            <Card className="group" key={post.id}>
-              <CardHeader>
-                <div className="flex items-center space-x-4">
-                  <Avatar className="w-10 h-10">
-                    <AvatarFallback>
-                      {post.author
-                        .split(" ")
-                        .map((name: string) => name[0])
-                        .join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="text-lg font-bold hover:underline hover:underline-offset-2">
-                      <Link href={`/posts/${post.id}`}>{post.title}</Link>
-                    </h3>
-                    <p className="text-muted-foreground text-sm">
-                      {post.author} •{" "}
-                      {new Date(post.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
-                      • {post.readTime}
-                    </p>
+            <Card
+              className="flex flex-col md:flex-row justify-between items-center p-4"
+              key={post.id}
+            >
+              <div className="max-w-3xl">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback>
+                        {post.author
+                          .split(" ")
+                          .map((name: string) => name[0])
+                          .join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="text-lg font-bold hover:underline hover:underline-offset-2">
+                        <Link href={`/posts/${post.id}`}>{post.title}</Link>
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        {post.author} •{" "}
+                        {new Date(post.date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                        • {post.readTime}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p>{post.description}</p>
-              </CardContent>
-              <CardFooter>
-                <Link
-                  href={`/posts/${post.id}`}
-                  className="text-primary font-medium hover:underline hover:underline-offset-2"
-                  prefetch={false}
-                >
-                  Read more
-                </Link>
-              </CardFooter>
+                </CardHeader>
+                <CardContent>
+                  <p>{post.description}</p>
+                </CardContent>
+                <CardFooter>
+                  <Link
+                    href={`/posts/${post.id}`}
+                    className="text-primary font-medium hover:underline hover:underline-offset-2"
+                    prefetch={false}
+                  >
+                    Read more
+                  </Link>
+                </CardFooter>
+              </div>
+              <div className="w-64 h-32">
+                {" "}
+                <img className="w-full h-full rounded" src={post.image} />
+              </div>
             </Card>
           ))
         ) : (

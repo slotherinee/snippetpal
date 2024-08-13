@@ -4,19 +4,21 @@ import Link from "next/link";
 const Hero = () => {
   return (
     <section className="flex flex-col gap-y-16">
-      <Image
-        priority
-        className="w-full object-cover rounded max-h-[768px]"
-        src="/hero-image.jpg"
-        alt="hero image"
-        sizes="100vw"
-        width={0}
-        height={0}
-      />
-      <div className="md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8 mb-20 md:mb-28">
+      <div className="w-full h-[500px]">
+        <Image
+          priority
+          className="rounded w-full h-full object-cover"
+          src="/hero-image.jpg"
+          alt="hero image"
+          sizes="100vw"
+          width={0}
+          height={0}
+        />
+      </div>
+      <div className="md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-32 mb-20 md:mb-28">
         {/* hero description and date */}
         <div>
-          <h1 className="mb-4 text-4xl lg:text-6xl leading-tight">
+          <h1 className="mb-4 text-4xl lg:text-6xl leading-normal">
             <Link className="hover:underline" href="post">
               Master Frontend Code with{" "}
               <em className="font-medium">SnippetPal</em>
