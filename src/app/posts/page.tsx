@@ -1,13 +1,5 @@
 import { Input } from "@/components/ui/input";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
-} from "@/components/ui/dropdown-menu";
-import {
   Card,
   CardHeader,
   CardContent,
@@ -16,10 +8,11 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { db } from "@/db";
-import { count, desc, like, or } from "drizzle-orm";
+import { count, desc, asc, like, or } from "drizzle-orm";
 import { blogPostsTable } from "@/db/schema";
 import PostPagination from "@/components/PostPagination";
 import { Metadata } from "next";
+import Dropdown from "@/components/Dropdown";
 
 type Post = {
   id: number;
@@ -42,10 +35,12 @@ export default async function Posts({
   searchParams?: {
     query?: string;
     page?: string;
+    sort?: "asc" | "desc";
   };
 }) {
   const query = searchParams?.query || "";
   let currentPage = Number(searchParams?.page) || 1;
+  const sort = searchParams?.sort || "desc";
   const pageSize = 4;
 
   const getTotalPostCount = async (isFiltering?: boolean) => {
@@ -72,7 +67,9 @@ export default async function Posts({
       await db
         .select()
         .from(blogPostsTable)
-        .orderBy(desc(blogPostsTable.date))
+        .orderBy(
+          sort === "desc" ? desc(blogPostsTable.date) : asc(blogPostsTable.date)
+        )
         .limit(pageSize)
         .offset((page - 1) * pageSize),
       await getTotalPostCount(false),
@@ -94,7 +91,9 @@ export default async function Posts({
           like(blogPostsTable.description, `%${filter}%`)
         )
       )
-      .orderBy(desc(blogPostsTable.date))
+      .orderBy(
+        sort === "desc" ? desc(blogPostsTable.date) : asc(blogPostsTable.date)
+      )
       .limit(pageSize)
       .offset((page - 1) * pageSize);
     return [filteredPosts, await getTotalPostCount(true)];
@@ -120,6 +119,7 @@ export default async function Posts({
               className="pl-10 pr-4 py-2 rounded-md bg-background border border-input focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
             />
           </div>
+          <Dropdown />
         </div>
       </div>
       <div className="grid grid-cols-1 gap-8">
