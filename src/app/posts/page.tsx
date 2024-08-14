@@ -13,6 +13,7 @@ import { blogPostsTable } from "@/db/schema";
 import PostPagination from "@/components/PostPagination";
 import { Metadata } from "next";
 import Dropdown from "@/components/Dropdown";
+import Image from "next/image";
 
 type Post = {
   id: number;
@@ -106,7 +107,7 @@ export default async function Posts({
   );
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col min-h-dvh">
+    <>
       <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
         <div className="flex items-center space-x-4 mb-4 sm:mb-0">
           <div className="relative flex-1">
@@ -170,8 +171,14 @@ export default async function Posts({
                 </CardFooter>
               </div>
               <div className="w-64 h-32">
-                {" "}
-                <img className="w-full h-full rounded" src={post.image} />
+                <Image
+                  src={post.image}
+                  alt="post photo"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  style={{ width: "100%", height: "100%", borderRadius: "4px" }}
+                />
               </div>
             </Card>
           ))
@@ -191,7 +198,7 @@ export default async function Posts({
           />
         </div>
       )}
-    </div>
+    </>
   );
 }
 

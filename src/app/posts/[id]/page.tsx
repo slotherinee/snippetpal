@@ -17,16 +17,15 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 const SinglePost = async ({ params }: { params: { id: string } }) => {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   const { id } = params;
   const { content: markdown } = (await db.query.blogPostsTable.findFirst({
     where: eq(blogPostsTable.id, Number(id)),
   })) as { content: string };
   return (
-    <section className="container mx-auto">
-      <article className="prose lg:prose-xl prose-pre:p-0 prose-pre:m-0">
-        <MarkdownRenderer markdown={markdown} />
-      </article>
-    </section>
+    <article className="prose lg:prose-xl prose-pre:p-0 prose-pre:m-0">
+      <MarkdownRenderer markdown={markdown} />
+    </article>
   );
 };
 
