@@ -13,16 +13,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationLink,
-  PaginationNext,
-} from "@/components/ui/pagination";
 import { db } from "@/db";
 import { count, desc, like, or } from "drizzle-orm";
 import { blogPostsTable } from "@/db/schema";
@@ -53,7 +45,7 @@ export default async function Posts({
   };
 }) {
   const query = searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
+  let currentPage = Number(searchParams?.page) || 1;
   const pageSize = 4;
 
   const getTotalPostCount = async (isFiltering?: boolean) => {
@@ -110,7 +102,7 @@ export default async function Posts({
 
   const [filteredPosts, filteredPagesCount] = await filterPosts(
     query,
-    currentPage,
+    1,
     pageSize
   );
 
