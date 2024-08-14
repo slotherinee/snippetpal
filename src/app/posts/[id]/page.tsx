@@ -17,7 +17,6 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 const SinglePost = async ({ params }: { params: { id: string } }) => {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
   const { id } = params;
   const { content: markdown } = (await db.query.blogPostsTable.findFirst({
     where: eq(blogPostsTable.id, Number(id)),
