@@ -42,7 +42,6 @@ export default async function Posts({
   const query = searchParams?.query || "";
   let currentPage = Number(searchParams?.page) || 1;
   const sort = searchParams?.sort || "desc";
-  const pageSize = 4;
 
   const getTotalPostCount = async (isFiltering?: boolean) => {
     if (isFiltering) {
@@ -63,7 +62,7 @@ export default async function Posts({
     return totalPostCount[0].count;
   };
 
-  async function getPosts(page = 1, pageSize = 4) {
+  async function getPosts(page = 1, pageSize = 6) {
     return [
       await db
         .select()
@@ -77,9 +76,9 @@ export default async function Posts({
     ];
   }
 
-  const [posts, totalPages] = await getPosts(currentPage, pageSize);
+  const [posts, totalPages] = await getPosts(currentPage);
 
-  const filterPosts = async (filter: string, page = 1, pageSize = 4) => {
+  const filterPosts = async (filter: string, page = 1, pageSize = 6) => {
     if (!filter) {
       return [posts, totalPages];
     }
@@ -100,11 +99,7 @@ export default async function Posts({
     return [filteredPosts, await getTotalPostCount(true)];
   };
 
-  const [filteredPosts, filteredPagesCount] = await filterPosts(
-    query,
-    1,
-    pageSize
-  );
+  const [filteredPosts, filteredPagesCount] = await filterPosts(query, 1);
 
   return (
     <>
